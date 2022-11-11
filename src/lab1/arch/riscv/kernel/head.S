@@ -6,6 +6,7 @@ _start:
     # ------------------
     # - your code here -
     # ------------------
+    la sp, boot_stack
     j start_kernel
     .section .bss.stack
     .globl boot_stack
