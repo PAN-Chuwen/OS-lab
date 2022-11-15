@@ -19,7 +19,7 @@ SECTIONS
     /* _stext, _etext 分别记录了text段的起始与结束地址 */
     .text : ALIGN(0x1000){
         _stext = .;
-
+        *(.text.init)
         *(.text.entry)
         *(.text .text.*)
         
