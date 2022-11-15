@@ -3,6 +3,22 @@
     .section .text.init
     .globl _start
 _start:
+
+    # set stvec = _traps
+
+
+
+    # set sie[STIE] = 1
+
+
+
+    # set first time interrupt
+
+
+
+    # set sstatus[SIE] = 1
+
+
     la sp, boot_stack
     j start_kernel
     .section .bss.stack
