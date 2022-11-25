@@ -9,6 +9,9 @@ void test() {
     // uint64 sstatus_value = csr_read(sstatus);
     
     while (1) {
-        // printk("kernel is running!\n");
+        for (int i = 0; i < 2e8; i++) {
+            
+        }
+        printk("kernel is running!\n");
     };
 }
