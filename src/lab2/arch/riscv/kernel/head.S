@@ -10,11 +10,27 @@ _start:
 
     # set sie[STIE] = 1, enable Time Interrupt
     addi t0, zero, 32
+    # cannot use csrrsi here since the uimm field only supports 5 bits
     csrrs x0, sie, t0
 
 
     # set first time interrupt
+    mv a7, zero # extension ID
+    mv a6, zero # function ID
+    mv a1, zero
+    mv a2, zero
+    mv a3, zero
+    mv a4, zero
+    mv a5, zero
     
+    li t1, 1000000
+    rdtime t0;
+    add a0, t0, t1
+    
+    
+    addi a0, zero, 0
+    addi a1, zero, 0
+    # ecall 
 
 
     # set sstatus[SIE] = 1, enable Interrupts in S mode
