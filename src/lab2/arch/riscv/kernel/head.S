@@ -9,7 +9,8 @@ _start:
     csrw stvec, t0
 
     # set sie[STIE] = 1, enable Time Interrupt
-    csrrs x0, sie, 0x10
+    addi t0, zero, 32
+    csrrs x0, sie, t0
 
 
     # set first time interrupt
@@ -17,7 +18,7 @@ _start:
 
 
     # set sstatus[SIE] = 1, enable Interrupts in S mode
-    csrrs x0, sstatus, 0x2
+    csrrsi x0, sstatus, 0x2
 
     la sp, boot_stack
     j start_kernel
