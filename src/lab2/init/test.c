@@ -8,7 +8,7 @@ void test() {
     // csr_write(sscratch, 0x13);
     // uint64 sstatus_value = csr_read(sstatus);
     
-    while (1){
+    while (1) {
         // printk("kernel is running!\n");
     };
 }

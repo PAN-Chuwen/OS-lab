@@ -3,7 +3,7 @@
 #include "types.h"
 #include "printk.h"
 
-const int MACHINE_TIMER_INTERRUPT_CODE = 7;
+const int MACHINE_TIMER_INTERRUPT_CODE = 5;
 
 void trap_handler(uint64 scause, uint64 sepc) {
     // 通过 `scause` 判断trap类型

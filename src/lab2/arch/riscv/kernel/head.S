@@ -15,7 +15,7 @@ _start:
 
 
     # set first time interrupt
-    mv a7, zero # extension ID
+    addi a7, zero, 0x00 # extension ID
     mv a6, zero # function ID
     mv a1, zero
     mv a2, zero
@@ -25,12 +25,8 @@ _start:
     
     li t1, 1000000
     rdtime t0;
-    add a0, t0, t1
-    
-    
-    addi a0, zero, 0
-    addi a1, zero, 0
-    # ecall 
+    add a0, t0, t1 # a0 stores the time for next interrupt to happen
+    ecall  # ecall stores a0 -> mtimecmp in M mode
 
 
     # set sstatus[SIE] = 1, enable Interrupts in S mode

@@ -14,7 +14,9 @@ _traps:
 
 
     # 2. call trap_handler
-    j trap_handler
+    csrr a0, scause
+    csrr a1, sepc
+    jal trap_handler
 
     # 3. restore sepc and 32 registers (x2(sp) should be restore last) from stack
     ld x1, 0(sp)
