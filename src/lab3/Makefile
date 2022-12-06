@@ -16,7 +16,8 @@ all:
 	${MAKE} -C lib all
 	${MAKE} -C init all
 	${MAKE} -C arch/riscv all
-	@echo -e '\n'Build Finished OK
+	@echo "\nBuild Finished OK"
+	${MAKE} clean
 
 run: all
 	@echo Launch the qemu ......
@@ -30,6 +31,10 @@ clean:
 	${MAKE} -C lib clean
 	${MAKE} -C init clean
 	${MAKE} -C arch/riscv clean
-	$(shell test -f vmlinux && rm vmlinux)
 	$(shell test -f System.map && rm System.map)
-	@echo -e '\n'Clean Finished
+	@echo "\nClean Finished, removed *.o and System.map"
+
+cleanAll: clean
+	$(shell test -f vmlinux && rm vmlinux)
+	@echo "\nvmlinux removed"
+
