@@ -1,8 +1,10 @@
 .section .text.entry
-    .align 2
-    .globl _traps 
-_traps:
+.align 2
 
+
+# entry for traps
+.globl _traps 
+_traps:
     _save_context:
     # 1. save 32 registers and sepc to stack
     # why we need to save epc?
@@ -80,3 +82,18 @@ _traps:
 
     # 4. return from trap
     sret 
+
+.global __dummy
+__dummy:
+    # YOUR CODE HERE
+
+# when entering __switch_to, a0 contains previous PCB address, a1 contains next PCB address to switch to 
+.globl __switch_to
+__switch_to:
+    # save state to prev process
+    # YOUR CODE HERE
+
+    # restore state from next process
+    # YOUR CODE HERE
+
+    ret

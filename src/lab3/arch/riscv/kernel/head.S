@@ -1,7 +1,6 @@
-.extern start_kernel
+.section .text.init
 
-    .section .text.init
-    .globl _start
+.globl _start
 _start:
     # set stack pointer
     la sp, boot_stack
@@ -38,10 +37,11 @@ _start:
     csrrsi x0, sstatus, 0x2
 
     j start_kernel
-    .section .bss.stack
-    .globl boot_stack
+
+.section .bss.stack
+.globl boot_stack
 boot_stack:
     .space 4096 #stack size = 4KB
 
-    .globl boot_stack_top
+.globl boot_stack_top
 boot_stack_top:
