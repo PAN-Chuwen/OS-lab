@@ -1,4 +1,5 @@
 #include "proc.h"
+#include "printk.h"
 
 extern void __dummy();
 

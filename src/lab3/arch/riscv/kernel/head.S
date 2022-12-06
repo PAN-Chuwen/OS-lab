@@ -3,6 +3,11 @@
     .section .text.init
     .globl _start
 _start:
+    # set stack pointer
+    la sp, boot_stack
+
+    # memory init before interrupt settings
+    jal mm_init
 
     # set stvec = _traps
     la t0, _traps
@@ -32,7 +37,6 @@ _start:
     # set sstatus[SIE] = 1, enable Interrupts in S mode
     csrrsi x0, sstatus, 0x2
 
-    la sp, boot_stack
     j start_kernel
     .section .bss.stack
     .globl boot_stack
