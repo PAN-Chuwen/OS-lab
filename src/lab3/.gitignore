@@ -1,0 +1,4 @@
+*.o
+vmlinux
+System.map
+Image
