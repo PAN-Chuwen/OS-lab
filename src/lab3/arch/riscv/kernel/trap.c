@@ -2,6 +2,7 @@
 #include "clock.h"
 #include "types.h"
 #include "printk.h"
+#include "proc.h"
 
 const int MACHINE_TIMER_INTERRUPT_CODE = 5;
 
@@ -15,8 +16,8 @@ void trap_handler(uint64 scause, uint64 sepc) {
     if ((scause >> 63) > 0) { // highest bit of scause = 1 => Interrupt
         uint32 interruptCode = scause; // get lower 32 bits of scause
         if (interruptCode == MACHINE_TIMER_INTERRUPT_CODE) {
-            printk("[S] Supervisor Mode Timer Interrupt\n");
             clock_set_next_event();
+            do_timer(); // must be done after clock_set_next_event()
         }
     }
 }

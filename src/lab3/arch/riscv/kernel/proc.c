@@ -39,7 +39,7 @@ void task_init() {
     // 3. 为 task[1] ~ task[NR_TASKS - 1] 设置 `thread_struct` 中的 `ra` 和 `sp`,
     // 4. 其中 `ra` 设置为 __dummy （见 4.3.2）的地址,  `sp` 设置为 该线程申请的物理页的高地址
         task[currentPID]->thread.ra = (uint64) __dummy;
-        task[currentPID]->thread.sp = (uint64)task[currentPID] + PGSIZE;
+        task[currentPID]->thread.sp = (uint64) task[currentPID] + PGSIZE;
     }
    
 
@@ -51,12 +51,43 @@ void task_init() {
 void dummy() {
     uint64 MOD = 1000000007;
     uint64 auto_inc_local_var = 0;
-    int last_counter = -1;
+    int last_counter = -1; // first time switch to this process
     while(1) {
-        if (last_counter == -1 || current->counter != last_counter) {
+        if (current->counter != last_counter) {
             last_counter = current->counter;
             auto_inc_local_var = (auto_inc_local_var + 1) % MOD;
             printk("[PID = %d] is running. auto_inc_local_var = %d\n", current->pid, auto_inc_local_var);
         }
     }
+}
+
+
+void do_timer() {
+    if (current == idle) {
+        printk("switch to task1\n");
+        switch_to(task[1]);
+    } else {
+        current->counter--;
+        if (current->counter <= 0) {
+            schedule();
+        }
+        else {
+            // do nothing
+        }
+    }
+}
+
+void schedule() {
+
+}
+
+// in entry.S, linker will do the work
+extern void __switch_to(struct task_struct* prev, struct task_struct* next); 
+
+void switch_to(struct task_struct* next) {
+    // jump to __switch_to if the next process scheduled is not the same as current one
+    if (current != next) {
+        __switch_to(current, next);
+    }
+    // ret is NOT called at the end of this function if switch happends
 }

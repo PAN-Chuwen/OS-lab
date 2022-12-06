@@ -19,7 +19,7 @@ struct thread_info {
 struct thread_struct {
     uint64 ra;
     uint64 sp;
-    uint64 s[12];
+    uint64 s[12]; // The callee-saved registers (s0-s11) must be saved and restored.
 };
 
 /* 线程数据结构 */

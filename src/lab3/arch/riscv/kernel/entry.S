@@ -1,6 +1,7 @@
+#define TASK_THREAD_RA 40 # 5 * 8 bytes = 40 bytes offset
+
 .section .text.entry
 .align 2
-
 
 # entry for traps
 .globl _traps 
@@ -46,6 +47,7 @@ _traps:
     csrr a1, sepc
     jal trap_handler
 
+    _restore_context:
     # 3. restore sepc and 32 registers (x2(sp) should be restore last) from stack
     ld x0, 0(sp)
     ld x1, 8(sp)
@@ -85,15 +87,49 @@ _traps:
 
 .global __dummy
 __dummy:
-    # YOUR CODE HERE
+    la t0, dummy
+    csrw sepc, t0
+    # return from trap
+    sret
 
 # when entering __switch_to, a0 contains previous PCB address, a1 contains next PCB address to switch to 
 .globl __switch_to
 __switch_to:
-    # save state to prev process
-    # YOUR CODE HERE
+    # get address of ra for both tasks (old & new)
+    li a4, TASK_THREAD_RA
+    add a3, a0, a4  # a3 now stores address of old task's ra
+    add a4, a1, a4  # a4 now stores address of new task's ra
+
+    # save state(ra, sp, s0-s11) to prev process
+    sd ra, 0(a3)
+    sd sp, 8(a3)
+    sd s0, 16(a3)
+    sd s1, 24(a3)
+    sd s2, 32(a3)
+    sd s3, 40(a3)
+    sd s4, 48(a3)
+    sd s5, 56(a3)
+    sd s6, 64(a3)
+    sd s7, 72(a3)
+    sd s8, 80(a3)
+    sd s9, 88(a3)
+    sd s10, 96(a3)
+    sd s11, 104(a3)
 
     # restore state from next process
-    # YOUR CODE HERE
+    ld ra, 0(a4)
+    ld sp, 8(a4)
+    ld s0, 16(a4)
+    ld s1, 24(a4)
+    ld s2, 32(a4)
+    ld s3, 40(a4)
+    ld s4, 48(a4)
+    ld s5, 56(a4)
+    ld s6, 64(a4)
+    ld s7, 72(a4)
+    ld s8, 80(a4)
+    ld s9, 88(a4)
+    ld s10, 96(a4)
+    ld s11, 104(a4)
 
     ret
