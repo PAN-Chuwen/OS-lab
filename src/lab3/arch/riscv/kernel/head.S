@@ -7,6 +7,8 @@ _start:
 
     # memory init before interrupt settings
     jal mm_init
+    # task init
+    jal task_init
 
     # set stvec = _traps
     la t0, _traps
