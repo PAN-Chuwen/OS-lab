@@ -88,6 +88,7 @@ _traps:
 .global __dummy
 __dummy:
     la t0, dummy
+    la ra, _restore_context
     csrw sepc, t0
     # return from trap
     sret
@@ -97,8 +98,8 @@ __dummy:
 __switch_to:
     # get address of ra for both tasks (old & new)
     li a4, TASK_THREAD_RA
-    add a3, a0, a4  # a3 now stores address of old task's ra
-    add a4, a1, a4  # a4 now stores address of new task's ra
+    add a3, a0, a4  # a3 now points to old task's thread_struct
+    add a4, a1, a4  # a4 now points to new task's thread_struct
 
     # save state(ra, sp, s0-s11) to prev process
     sd ra, 0(a3)
@@ -132,4 +133,4 @@ __switch_to:
     ld s10, 96(a4)
     ld s11, 104(a4)
 
-    ret
+    ret # PC <- $ra, will jump to __dummy or dummy()

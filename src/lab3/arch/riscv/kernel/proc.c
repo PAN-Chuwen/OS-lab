@@ -87,7 +87,10 @@ extern void __switch_to(struct task_struct* prev, struct task_struct* next);
 void switch_to(struct task_struct* next) {
     // jump to __switch_to if the next process scheduled is not the same as current one
     if (current != next) {
-        __switch_to(current, next);
+        struct task_struct* old = current;
+        current = next;
+        __switch_to(old, next);
     }
-    // ret is NOT called at the end of this function if switch happends
+    // ret is NOT called at the end of this function if switch happends (when first time switch to the new task)
+    // when >= 2 times, task execute from this line
 }
