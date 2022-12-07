@@ -84,7 +84,7 @@ void schedule() {
             // if the remaining time is 0, increase zeroCount and NOT change shortestPID
             zeroCount++;
         } else if (task[currentPID]->counter < minCount) {
-            // if remaining time >0, judge if the shortestPID should be changed
+            // if remaining time > 0, judge if the shortestPID should be changed
             shortestPID = currentPID;
             minCount = task[currentPID]->counter;
         }
