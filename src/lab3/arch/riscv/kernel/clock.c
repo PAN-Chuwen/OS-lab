@@ -3,7 +3,7 @@
 // clock.c
 
 // QEMU中时钟的频率是10MHz, 也就是1秒钟相当于10000000个时钟周期。
-uint64 TIMECLOCK = 10000000;
+uint64 TIMECLOCK = 1000000;
 
 uint64 get_cycles() {
     // 编写内联汇编，使用 rdtime 获取 time 寄存器中 (也就是mtime 寄存器 )的值并返回
