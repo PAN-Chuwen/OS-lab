@@ -101,8 +101,8 @@ void schedule() {
         }
     }
     // if the all tasks' running time are 0, reset running time for all tasks
-    printk("\nreset counter for all tasks:\n");
     if (zeroCount == NR_TASKS - 1) {
+        printk("\nreset counter for all tasks:\n");
         for (currentPID = 1; currentPID < NR_TASKS; currentPID++) {
             task[currentPID]->counter = rand();
             printk("SET [PID = %d PRIORITY = %d COUNTER = %d]\n",
