@@ -98,6 +98,7 @@ void schedule() {
         schedule(); // re-schedule
     }
     switch_to(task[shortestPID]);
+    // back to do_timer()
 }
 
 // in entry.S, linker will do the work
@@ -110,6 +111,6 @@ void switch_to(struct task_struct* next) {
         current = next;
         __switch_to(old, next);
     }
-    // ret is NOT called at the end of this function if switch happends (when first time switch to the new task)
-    // when >= 2 times, task execute from this line
+    // the tail of switch_to is reached only when task is scheduled again(restored from __switch_to)
+    // back to tail of schedule(), and all the way back to the start of _restore_context in _traps
 }

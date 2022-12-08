@@ -85,13 +85,13 @@ _traps:
     # 4. return from trap
     sret 
 
+# __dummy is only called once, treat it as part of task init(set entrance for dummy() )
 .global __dummy
 __dummy:
     la t0, dummy
-    la ra, _restore_context
-    csrw sepc, t0
-    # return from trap
-    sret
+    csrw sepc, t0 
+    # return to dummy
+    sret # need to enable interrupt first to use sret
 
 # when entering __switch_to, a0 contains previous PCB address, a1 contains next PCB address to switch to 
 .globl __switch_to
@@ -104,33 +104,33 @@ __switch_to:
     # save state(ra, sp, s0-s11) to prev process
     sd ra, 0(a3)
     sd sp, 8(a3)
-    # sd s0, 16(a3)
-    # sd s1, 24(a3)
-    # sd s2, 32(a3)
-    # sd s3, 40(a3)
-    # sd s4, 48(a3)
-    # sd s5, 56(a3)
-    # sd s6, 64(a3)
-    # sd s7, 72(a3)
-    # sd s8, 80(a3)
-    # sd s9, 88(a3)
-    # sd s10, 96(a3)
-    # sd s11, 104(a3)
+    sd s0, 16(a3)
+    sd s1, 24(a3)
+    sd s2, 32(a3)
+    sd s3, 40(a3)
+    sd s4, 48(a3)
+    sd s5, 56(a3)
+    sd s6, 64(a3)
+    sd s7, 72(a3)
+    sd s8, 80(a3)
+    sd s9, 88(a3)
+    sd s10, 96(a3)
+    sd s11, 104(a3)
 
     # restore state from next process
     ld ra, 0(a4)
     ld sp, 8(a4)
-    # ld s0, 16(a4)
-    # ld s1, 24(a4)
-    # ld s2, 32(a4)
-    # ld s3, 40(a4)
-    # ld s4, 48(a4)
-    # ld s5, 56(a4)
-    # ld s6, 64(a4)
-    # ld s7, 72(a4)
-    # ld s8, 80(a4)
-    # ld s9, 88(a4)
-    # ld s10, 96(a4)
-    # ld s11, 104(a4)
+    ld s0, 16(a4)
+    ld s1, 24(a4)
+    ld s2, 32(a4)
+    ld s3, 40(a4)
+    ld s4, 48(a4)
+    ld s5, 56(a4)
+    ld s6, 64(a4)
+    ld s7, 72(a4)
+    ld s8, 80(a4)
+    ld s9, 88(a4)
+    ld s10, 96(a4)
+    ld s11, 104(a4)
 
-    ret # PC <- $ra, will jump to __dummy or dummy()
+    ret # PC <- $ra, will jump to __dummy or tail of switch_to()
