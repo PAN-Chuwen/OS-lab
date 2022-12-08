@@ -9,10 +9,18 @@ extern void __dummy();
 struct task_struct* idle;           // idle process
 struct task_struct* current;        // 指向当前运行线程的 `task_struct`
 struct task_struct* task[NR_TASKS]; // 线程数组, 所有的线程都保存在此
-uint64 shortestPID = 1;
+
 uint64 currentPID;
+#ifdef SJF
+uint64 shortestPID = 1;
 uint64 minCount = INF;
 uint64 zeroCount = 0;
+#endif
+
+#ifdef PRIORITY
+uint64 next, c;
+struct task_struct** p;
+#endif
 
 void task_init() {
     // 1. 调用 kalloc() 为 idle 分配一个物理页
@@ -81,6 +89,7 @@ void schedule() {
     */ 
 
     #ifdef SJF
+    // Shortest Job First
     for (currentPID = 1, zeroCount = 0, shortestPID = 1, minCount = INF; currentPID < NR_TASKS; currentPID++) {
         if (task[currentPID]->counter == 0) {
             // if the remaining time is 0, increase zeroCount and NOT change shortestPID
@@ -91,16 +100,57 @@ void schedule() {
             minCount = task[currentPID]->counter;
         }
     }
-    #endif
     // if the all tasks' running time are 0, reset running time for all tasks
+    printk("\nreset counter for all tasks:\n");
     if (zeroCount == NR_TASKS - 1) {
         for (currentPID = 1; currentPID < NR_TASKS; currentPID++) {
             task[currentPID]->counter = rand();
+            printk("SET [PID = %d PRIORITY = %d COUNTER = %d]\n",
+                    task[currentPID]->pid,
+                    task[currentPID]->priority,
+                    task[currentPID]->counter
+                );
         }
-        printk("reset running time for all tasks\n\n");
         schedule(); // re-schedule
     }
     switch_to(task[shortestPID]);
+    #endif
+    #ifdef PRIORITY
+    /* Priority sheduling
+     * 1. the task with larger priority will be run first
+     * 
+     */
+     while (1) {
+        c = 0;
+        next = 0;
+        currentPID = NR_TASKS;
+        p = &task[NR_TASKS]; // *p is the current task (task[currentPID])
+        while (--currentPID) {
+            if (!*--p) // change p, and if current task if not initialized, skip current task
+                continue;
+            if ((*p)->counter >= c) { // note that (*p)->counter is uint64, has to make variable c uint64
+                c = (*p)->counter;
+                next = currentPID;
+            } // select task with largest counter
+        }
+        if (c != 0) break; // if the scheduled task's counter is not 0
+        // otherwise reset task's counter by priority
+        printk("\nreset counter for all tasks:\n");
+        for (p = &task[NR_TASKS - 1] ; p > &task[0] ; --p)
+            if (*p) {
+                (*p)->counter = ((*p)->counter >> 1) + (*p)->priority; //change task counter
+                printk("SET [PID = %d PRIORITY = %d COUNTER = %d]\n",
+                        (*p)->pid,
+                        (*p)->priority,
+                        (*p)->counter
+                );
+            }
+            // note that if counter and priority are not changed, then every reset result would be same
+    }
+    switch_to(task[next]);
+
+    #endif
+    
     // back to do_timer()
 }
 
