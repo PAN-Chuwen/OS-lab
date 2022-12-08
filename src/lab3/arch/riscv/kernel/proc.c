@@ -55,7 +55,7 @@ void dummy() {
         if (last_counter == -1 || current->counter != last_counter) {
             last_counter = current->counter;
             auto_inc_local_var = (auto_inc_local_var + 1) % MOD;
-            printk("[PID = %d] is running. counter = %d\n", current->pid, current->counter);
+            printk("[PID = %d] is running. counter = %d, localVar = %d\n", current->pid, current->counter, auto_inc_local_var);
         }
     }
 }
@@ -79,6 +79,8 @@ void schedule() {
     *  local = stored in task's own stack (every task has one minCount if doing so)
     *  global(see top of proc.c) = stored in OS's stack
     */ 
+
+    #ifdef SJF
     for (currentPID = 1, zeroCount = 0, shortestPID = 1, minCount = INF; currentPID < NR_TASKS; currentPID++) {
         if (task[currentPID]->counter == 0) {
             // if the remaining time is 0, increase zeroCount and NOT change shortestPID
@@ -89,12 +91,13 @@ void schedule() {
             minCount = task[currentPID]->counter;
         }
     }
+    #endif
     // if the all tasks' running time are 0, reset running time for all tasks
     if (zeroCount == NR_TASKS - 1) {
         for (currentPID = 1; currentPID < NR_TASKS; currentPID++) {
             task[currentPID]->counter = rand();
         }
-        printk("\n");
+        printk("reset running time for all tasks\n\n");
         schedule(); // re-schedule
     }
     switch_to(task[shortestPID]);
@@ -109,6 +112,7 @@ void switch_to(struct task_struct* next) {
     if (current != next) {
         struct task_struct* old = current;
         current = next;
+        printk("switch from task[%d] to task[%d]\n", old->pid, next->pid);
         __switch_to(old, next);
     }
     // the tail of switch_to is reached only when task is scheduled again(restored from __switch_to)
