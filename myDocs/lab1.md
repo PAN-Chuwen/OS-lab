@@ -38,7 +38,7 @@ cd /pancw/os22fall-stu/src/lab1 && gdb-multiarch $(pwd)/vmlinux
 
 为了方便，我在`~/.bashrc`中添加了`mygdb`函数和对应的环境变量
 
-<img src="./.assets/lab1/image-20221115165849782.png" alt="image-20221115165849782" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115165849782.png" alt="image-20221115165849782" style="zoom: 25%;" /> 
 
 ```
 mygdb lab1
@@ -46,7 +46,7 @@ mygdb lab1
 
 现在直接输入`mygdb lab1`就可以启动gdb来调试lab1的vmlinux了
 
-<img src="./.assets/lab1/image-20221115165940270.png" alt="image-20221115165940270" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115165940270.png" alt="image-20221115165940270" style="zoom: 25%;" /> 
 
 
 
@@ -88,7 +88,7 @@ boot_stack_top:
 
 ### 编写 lib/Makefile
 
-<img src="./.assets/lab1/image-20221115171343230.png" alt="image-20221115171343230" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115171343230.png" alt="image-20221115171343230" style="zoom: 25%;" /> 
 
 `lib/`目录下只有`print.c`一个文件，在理解了Makefile的规则后我发现`init/`目录下的Makefile和我们要写的Makefile要完成的任务一模一样(编译当前文件夹下所有`.c`文件)，因此我把`init/Makefile`中的内容拷贝到了`lib/Makefile`下
 
@@ -102,7 +102,7 @@ boot_stack_top:
 
 在编写 `sbi_ecall()`前我们先用gdb观察汇编代码. 在跳转到sbi_ecall前caller先将参数的值用`li`指令分别赋给a0-a7
 
-<img src="./.assets/lab1/image-20221110211243278.png" alt="image-20221110211243278" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221110211243278.png" alt="image-20221110211243278" style="zoom: 25%;" /> 
 
 
 
@@ -112,7 +112,7 @@ i r
 
 在gdb中输入查看进入`sbi_ecall()`时寄存器的值
 
-<img src="./.assets/lab1/image-20221111132119479.png" alt="image-20221111132119479" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221111132119479.png" alt="image-20221111132119479" style="zoom: 25%;" /> 
 
 
 
@@ -162,7 +162,7 @@ __asm__ volatile (
 
 第四步：`ecall`
 
-<img src="./.assets/lab1/image-20221111141354175.png" alt="image-20221111141354175" style="zoom:50%;" />  
+<img src="./.assets/lab1/image-20221111141354175.png" alt="image-20221111141354175" style="zoom: 25%;" />  
 
 ```sh
 x/8xg $sp
@@ -170,7 +170,7 @@ x/8xg $sp
 
 查看栈中数据, 其中8表示显示8个单元，x表示用16进制显示，g代表每个单元为32位(giant word)
 
-<img src="./.assets/lab1/image-20221115175701549.png" alt="image-20221115175701549" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115175701549.png" alt="image-20221115175701549" style="zoom: 25%;" /> 
 
  可以看到栈中存放了原本a0-a7的数据
 
@@ -178,7 +178,7 @@ x/8xg $sp
 
 #### ecall 前寄存器的状态
 
-<img src="./.assets/lab1/image-20221121182555967.png" alt="image-20221121182555967" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221121182555967.png" alt="image-20221121182555967" style="zoom: 25%;" /> 
 
 a7没有显示, 在下一页中查看显示值为1, 符合我们的预期
 
@@ -193,7 +193,7 @@ a7没有显示, 在下一页中查看显示值为1, 符合我们的预期
     ...
 ```
 
-<img src="./.assets/lab1/image-20221111145817606.png" alt="image-20221111145817606" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221111145817606.png" alt="image-20221111145817606" style="zoom: 25%;" /> 
 
 一开始我在写ret_struct赋值时的思路是把整个ret_struct看作一整个64位寄存器，利用移位操作把两个32位的值赋给ret_struct对应寄存器的高32位/低32位，但后来发现把struct直接放进内联汇编代码中会报错，并且会涉及大小端的问题，还不如直接把struct的两个成员变量分别和2个寄存器相绑定，让编译器做汇编代码的转换。
 
@@ -252,7 +252,7 @@ void puti(int x) {
 
 验证，可以看到成功打印出了`2022 Hello RISC-V`
 
-<img src="./.assets/lab1/image-20221115181905240.png" alt="image-20221115181905240" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115181905240.png" alt="image-20221115181905240" style="zoom: 25%;" /> 
 
 ## 思考题
 
@@ -315,7 +315,7 @@ callee-saved register 又被称为 non-volatile register. 这类寄存器根据c
 cat System.map
 ```
 
-<img src="./.assets/lab1/image-20221115143920067.png" alt="image-20221115143920067" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115143920067.png" alt="image-20221115143920067" style="zoom: 25%;" /> 
 
 也可以用`nm` 命令来查看`linuxvm` 中存放的symbol table
 
@@ -329,7 +329,7 @@ nm linuxvm
 diff System.map <(nm linuxvm)
 ```
 
-<img src="./.assets/lab1/image-20221115143946517.png" alt="image-20221115143946517" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115143946517.png" alt="image-20221115143946517" style="zoom: 25%;" /> 
 
 
 
@@ -347,7 +347,7 @@ riscv64-linux-gnu-readelf --help
 
 查看readelf命令的相关帮助
 
-<img src="./.assets/lab1/image-20221115164115154.png" alt="image-20221115164115154" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115164115154.png" alt="image-20221115164115154" style="zoom: 25%;" /> 
 
 选用-a 等同于查看所有信息
 
@@ -355,7 +355,7 @@ riscv64-linux-gnu-readelf --help
 riscv64-linux-gnu-readelf -a vmlinux
 ```
 
-<img src="./.assets/lab1/image-20221115164248293.png" alt="image-20221115164248293" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115164248293.png" alt="image-20221115164248293" style="zoom: 25%;" /> 
 
 (后面还有太多了)，也可以使用其他option单独查看特定信息，这里就不演示了
 
@@ -367,7 +367,7 @@ riscv64-linux-gnu-objdump --help
 
 查看odjdump命令的相关帮助
 
-<img src="./.assets/lab1/image-20221115163725707.png" alt="image-20221115163725707" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115163725707.png" alt="image-20221115163725707" style="zoom: 25%;" /> 
 
 例如我们选用-S, 查看vmlinux中链接后每一段对应的汇编代码和c代码
 
@@ -375,7 +375,7 @@ riscv64-linux-gnu-objdump --help
 riscv64-linux-gnu-objdump -S vmlinux
 ```
 
-<img src="./.assets/lab1/image-20221115163641085.png" alt="image-20221115163641085" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115163641085.png" alt="image-20221115163641085" style="zoom: 25%;" /> 
 
 
 
@@ -387,7 +387,7 @@ file vmlinux
 
 使用`file`命令查看vmlinux的文件类型
 
-<img src="./.assets/lab1/image-20221115164821430.png" alt="image-20221115164821430" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115164821430.png" alt="image-20221115164821430" style="zoom: 25%;" /> 
 
 vmlinux为ELF文件类型
 
@@ -407,21 +407,21 @@ System Call Table 是一个数组，里面存放了函数指针, 每一个函数
 
 在vscode中按下 `cmd + p` , 输入 `arch/arm/sys` , 会跳出来很多选项
 
-<img src="./.assets/lab1/image-20221115155429558.png" alt="image-20221115155429558" style="zoom:50%;" />  
+<img src="./.assets/lab1/image-20221115155429558.png" alt="image-20221115155429558" style="zoom: 25%;" />  
 
 我们选择第一个 `syscall.tbl` , 即可查看ARM32 的 系统调用表
 
-<img src="./.assets/lab1/image-20221115155527532.png" alt="image-20221115155527532" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115155527532.png" alt="image-20221115155527532" style="zoom: 25%;" /> 
 
 问题在于 `syscall.tbl` 只是单纯用于记录的，在linux内核中具体存储系统调用信息的那个数组到底在哪？
 
 经过一番探索后我在arm中的`sys32.c` 找到了 `sys_call_table`这样一个数组(虽然它在arm64架构下)
 
- <img src="./.assets/lab1/image-20221115160025019.png" alt="image-20221115160025019" style="zoom:50%;" />
+ <img src="./.assets/lab1/image-20221115160025019.png" alt="image-20221115160025019" style="zoom: 25%;" />
 
 查看 `asm/unistd32.h` 
 
-<img src="./.assets/lab1/image-20221115160048174.png" alt="image-20221115160048174" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115160048174.png" alt="image-20221115160048174" style="zoom: 25%;" /> 
 
 可以看到其中包括ARM32架构的所有系统调用编号
 
@@ -429,31 +429,31 @@ System Call Table 是一个数组，里面存放了函数指针, 每一个函数
 
 在vscode中搜索 `sys.tbl` , 可以找到x86的对应系统调用表(32/64都有), 内容格式和ARM的非常类似
 
-<img src="./.assets/lab1/image-20221115161119244.png" alt="image-20221115161119244" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115161119244.png" alt="image-20221115161119244" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab1/image-20221115161231864.png" alt="image-20221115161231864" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115161231864.png" alt="image-20221115161231864" style="zoom: 25%;" /> 
 
 x86的系统调用表在代码中的具体位置和ARM略有不同，在`syscall_64.c` 和 `syscall_32.c` 中
 
-<img src="./.assets/lab1/image-20221115161529604.png" alt="image-20221115161529604" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115161529604.png" alt="image-20221115161529604" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab1/image-20221115161559978.png" alt="image-20221115161559978" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115161559978.png" alt="image-20221115161559978" style="zoom: 25%;" /> 
 
 这里我跟随include一路向下走，并没有发现类似ARM中的系统调用表，最终在`unistd_64.h`中发现了以下define(并没有找到x86内核代码中的系统调用表)
 
-<img src="./.assets/lab1/image-20221115161919721.png" alt="image-20221115161919721" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115161919721.png" alt="image-20221115161919721" style="zoom: 25%;" /> 
 
 ###### riscv32/riscv64
 
 在寻找riscv32/riscv64的系统调用表时我遇到了困难。第一个问题是riscv并没有类似ARM或x86的`syscall.tbl`, 第二个问题是虽然`riscv/kernel/syscall_table.c`中有存储riscv系统调用表的数组,  但一路跟随include最后找到的系统调用表文件`.../asm-generic/unistd.h` 并不在`arch/riscv`目录下(虽然系统调用的编号是正确的)
 
-<img src="./.assets/lab1/image-20221115162247664.png" alt="image-20221115162247664" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115162247664.png" alt="image-20221115162247664" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab1/image-20221115162411471.png" alt="image-20221115162411471" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115162411471.png" alt="image-20221115162411471" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab1/image-20221115162445071.png" alt="image-20221115162445071" style="zoom:50%;" /> 
+<img src="./.assets/lab1/image-20221115162445071.png" alt="image-20221115162445071" style="zoom: 25%;" /> 
 
- <img src="./.assets/lab1/image-20221115162650936.png" alt="image-20221115162650936" style="zoom:50%;" /> 
+ <img src="./.assets/lab1/image-20221115162650936.png" alt="image-20221115162650936" style="zoom: 25%;" /> 
 
 ## 参考资料
 

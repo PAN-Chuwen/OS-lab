@@ -22,7 +22,7 @@
 
 为了验证我的想法, 在 `05bd607` 这个 commit 中我把 `__switch_to`里除 `ra` 和 `sp` 的寄存器保存/恢复代码全部注释掉了
 
-<img src="./.assets/lab3/image-20221208185904403.png" alt="image-20221208185904403" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208185904403.png" alt="image-20221208185904403" style="zoom: 25%;" /> 
 
  <img src="./.assets/lab3/image-20221208191108561.png" alt="image-20221208191108561" style="zoom: 50%;" /> 
 
@@ -33,15 +33,15 @@ make run
 
 我发现内核线程的切换还能正常运作,  而且每次从 `__switch_to` 返回前 `sp` 均设置正确
 
-<img src="./.assets/lab3/image-20221208190139955.png" alt="image-20221208190139955" style="zoom: 50%;" /> 
+<img src="./.assets/lab3/image-20221208190139955.png" alt="image-20221208190139955" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab3/lQLPJwSdSAOOlJzNBMDNBa6wp1MY3VoMh68DjNAZb4BHAA_1454_1216.png" alt="lQLPJwSdSAOOlJzNBMDNBa6wp1MY3VoMh68DjNAZb4BHAA_1454_1216" style="zoom:50%;" /> 
+<img src="./.assets/lab3/lQLPJwSdSAOOlJzNBMDNBa6wp1MY3VoMh68DjNAZb4BHAA_1454_1216.png" alt="lQLPJwSdSAOOlJzNBMDNBa6wp1MY3VoMh68DjNAZb4BHAA_1454_1216" style="zoom: 25%;" />  
 
 > `sp`的检查, 有时候末尾是 '28' 而不是 '48' 是因为在`printk` 中申请了额外的栈空间后发生了中断
 
-<img src="./.assets/lab3/image-20221207215100973.png" alt="image-20221207215100973" style="zoom: 50%;" /> 
+<img src="./.assets/lab3/image-20221207215100973.png" alt="image-20221207215100973" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab3/image-20221208190705133.png" alt="image-20221208190705133" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208190705133.png" alt="image-20221208190705133" style="zoom: 25%;" /> 
 
 > 流程检查, 从`__switch_to` 一路返回到 `_restore_context`
 
@@ -51,7 +51,7 @@ make run
 
 为此我创建了branch `Test-switch_to`
 
-<img src="./.assets/lab3/image-20221208191313424.png" alt="image-20221208191313424" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208191313424.png" alt="image-20221208191313424" style="zoom: 25%;" /> 
 
 ```sh
 git switch Test-switch_to
@@ -71,7 +71,7 @@ git switch Test-switch_to
 
 ```
 
-<img src="./.assets/lab3/image-20221208191921953.png" alt="image-20221208191921953" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208191921953.png" alt="image-20221208191921953" style="zoom: 25%;" /> 
 
 > 可以看到switch_to 确实完成了一次线程的切换
 >
@@ -92,7 +92,7 @@ git switch Test-switch_to
 
 每个task的变量都应该放在task struct的栈当中(例如`auto_inc_local_var`), 它们的地址应该为 `0x87ffxxxx` 这样的形式
 
-<img src="./.assets/lab3/image-20221208193000675.png" alt="image-20221208193000675" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208193000675.png" alt="image-20221208193000675" style="zoom: 25%;" /> 
 
 > 在gdb里可以把断点设到`dummy` 中, 然后查看汇编代码是从哪里读取局部变量的(看`sp`/`s0`)
 
@@ -100,7 +100,7 @@ git switch Test-switch_to
 
  `current` 在所有 task 初始化之前就存在了. `current`的存放位置在(或者说`&current`指向) 整个OS的栈区(`0x8020xxxx`) 而不是某个线程的栈(`0x87ffxxxx`)
 
-<img src="./.assets/lab3/image-20221208193226036.png" alt="image-20221208193226036" style="zoom:50%;" />   
+<img src="./.assets/lab3/image-20221208193226036.png" alt="image-20221208193226036" style="zoom: 25%;" />   
 
 > 汇编代码中`... = current->counter`对应的代码. 
 >
@@ -122,7 +122,7 @@ git switch Test-switch_to
 
 由于这个commit的进展大概率是修复上一个commit的缺陷, 因此进展/缺陷一般只挑一个说
 
-<img src="./.assets/lab3/image-20221208193635267.png" alt="image-20221208193635267" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208193635267.png" alt="image-20221208193635267" style="zoom: 25%;" /> 
 
 > commit graph
 
@@ -139,13 +139,13 @@ make run
 
 ##### 运行结果
 
-<img src="./.assets/lab3/image-20221208202518272.png" alt="image-20221208202518272" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208202518272.png" alt="image-20221208202518272" style="zoom: 25%;" /> 
 
 ##### 缺陷
 
 这个 commit 完成了内存/内核线程的初始化. 我尝试从 `idle` 线程切换到` task[1]`(即更改`current`, 检查`current`的值在`switch_to`执行后是否发生变化, 先不管寄存器是否保存正确), 但很遗憾结果是失败的, 操作系统一直在运行`idle`线程. 原因在于我没有理解 `current` 是怎么切换内核线程的 (需要我们手动执行 `current = next`, `current `不会自己切换)
 
-<img src="./.assets/lab3/image-20221208195155074.png" alt="image-20221208195155074" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208195155074.png" alt="image-20221208195155074" style="zoom: 25%;" /> 
 
 > 左: Add context switch
 >
@@ -157,23 +157,21 @@ make run
 
 ##### 运行结果
 
-<img src="./.assets/lab3/image-20221208201413867.png" alt="image-20221208201413867" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208201413867.png" alt="image-20221208201413867" style="zoom: 25%;" /> 
 
 > 完成了 `idle` ->` task[1] `的切换, 但是由于我们还没有实现调度算法, 所以switch只发生了一次(事实上我们是在`do_timer`中调用`switch_to` 而非 `schedule`来测试的)
 >
-> <img src="./.assets/lab3/image-20221208202215899.png" alt="image-20221208202215899" style="zoom:50%;" /> 
+> <img src="./.assets/lab3/image-20221208202215899.png" alt="image-20221208202215899" style="zoom: 25%;" /> 
 
 #### Implement SJF scheduling algorithm
 
 ##### 运行结果
 
-<img src="./.assets/lab3/image-20221208202700272.png" alt="image-20221208202700272" style="zoom:50%;" /> 
-
-
+<img src="./.assets/lab3/image-20221208202700272.png" alt="image-20221208202700272" style="zoom: 25%;" /> 
 
 ##### 进展
 
-<img src="./.assets/lab3/image-20221208202745615.png" alt="image-20221208202745615" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208202745615.png" alt="image-20221208202745615" style="zoom: 25%;" /> 
 
 > 实现了SJF算法, 但说实话这个算法本身并不是lab3的难点
 
@@ -181,9 +179,9 @@ make run
 
 运行结果和上个commit没有什么区别, 但是在原理上我把线程切换和时钟中断分离开了
 
-<img src="./.assets/lab3/image-20221208195748465.png" alt="image-20221208195748465" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208195748465.png" alt="image-20221208195748465" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab3/image-20221208195932007.png" alt="image-20221208195932007" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208195932007.png" alt="image-20221208195932007" style="zoom: 25%;" /> 
 
 这个commit中我终于理解了内核线程的切换需要独立于时钟中断, 之前我一直通过在 `__dummy`中设置`ra`的方式来让后面的线程切换直接跳到 `restore_context`, 并且把`__switch_to`中保存s系寄存器的代码全部注释掉, 在理解原理之后修改回了正确的方式.
 
@@ -203,7 +201,7 @@ git switch master
 make run
 ```
 
-<img src="./.assets/lab3/image-20221208203038662.png" alt="image-20221208203038662" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208203038662.png" alt="image-20221208203038662" style="zoom: 25%;" /> 
 
 ##### SJF
 
@@ -213,7 +211,7 @@ git switch SJF
 make run
 ```
 
-<img src="./.assets/lab3/image-20221208203144631.png" alt="image-20221208203144631" style="zoom:50%;" /> 
+<img src="./.assets/lab3/image-20221208203144631.png" alt="image-20221208203144631" style="zoom: 25%;" /> 
 
 ## 其他问题
 

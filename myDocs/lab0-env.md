@@ -40,7 +40,7 @@ docker run -it --name ubuntu -v "$(pwd)/mountdir":/pancw ubuntu-config bash
 
 
 
-![image-20221027145040809](./.assets/lab0-env/image-20221027145040809.png)
+<img src="./.assets/lab0-env/image-20221027145040809.png" alt="image-20221027145040809" style="zoom:25%;" /> 
 
 > 图中左边是docker ubuntu bash, 右边是本机的zsh，可以看到文件都是一一对应的(无论在哪边更改文件，另一边也能立即反映出来)
 
@@ -124,7 +124,7 @@ $ sudo apt install gdb-multiarch
 
 `Image`还可以被压缩为`zImage`和`bzImage`等文件，但这不是实验重点，这里就不进一步解析了。
 
-<img src="./.assets/lab0-env/image-20221027190904421.png" alt="image-20221027190904421" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221027190904421.png" alt="image-20221027190904421" style="zoom: 25%;" /> 
 
 
 
@@ -164,7 +164,7 @@ cd /pancw/linux && make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j$(nproc)
 
 执行该命令后会经过较长时间的编译过程(大概30分钟左右)，编译完成后会得到 `./vmlinux` 和 `./arch/riscv/Image`
 
-<img src="./.assets/lab0-env/image-20221028130131076.png" alt="image-20221028130131076" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028130131076.png" alt="image-20221028130131076" style="zoom: 25%;" /> 
 
 > 编译的过程，会输出编译得到的中间文件
 
@@ -192,7 +192,7 @@ qemu-system-riscv64 -help | grep "\-S "
 qemu-system-riscv64 -help | grep "\-s "
 ```
 
-<img src="./.assets/lab0-env/image-20221027201328801.png" alt="image-20221027201328801" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221027201328801.png" alt="image-20221027201328801" style="zoom: 25%;" /> 
 
 `-drive`的解释比较长，我们可以用`-A 20` 来显示额外20行的信息
 
@@ -200,7 +200,7 @@ qemu-system-riscv64 -help | grep "\-s "
 qemu-system-riscv64 -help | grep "\-drive" -A 20
 ```
 
-<img src="./.assets/lab0-env/image-20221027201453783.png" alt="image-20221027201453783" style="zoom:50%;" />   
+<img src="./.assets/lab0-env/image-20221027201453783.png" alt="image-20221027201453783" style="zoom: 25%;" />   
 
 `rootfs.img`
 
@@ -220,21 +220,21 @@ cd / && gdb-multiarch /pancw/linux/vmlinux
 
 在终端1中输入指令并运行后，由于命令中有`-S`和`-s`选项，会等待另一端(GDB)的端口连接
 
-<img src="./.assets/lab0-env/image-20221027202916372.png" alt="image-20221027202916372" style="zoom:50%;" />
+<img src="./.assets/lab0-env/image-20221027202916372.png" alt="image-20221027202916372" style="zoom: 25%;" /> 
 
 此时在终端2中启动GDB，但由于我们还没有在GDB中声明连接端口，所以QEMU和GDB并没有找到对方
 
-<img src="./.assets/lab0-env/image-20221027203159654.png" alt="image-20221027203159654" style="zoom:50%;" />
+<img src="./.assets/lab0-env/image-20221027203159654.png" alt="image-20221027203159654" style="zoom: 25%;" /> 
 
 在GDB中输入`target remote :1234`
 
-![image-20221027204905208](./.assets/lab0-env/image-20221027204905208.png)
+<img src="./.assets/lab0-env/image-20221027204905208.png" alt="image-20221027204905208" style="zoom:25%;" /> 
 
 #### 为什么找不到debugging symbols？
 
-<img src="./.assets/lab0-env/image-20221027211621119.png" alt="image-20221027211621119" style="zoom:50%;" />
+<img src="./.assets/lab0-env/image-20221027211621119.png" alt="image-20221027211621119" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab0-env/image-20221027211745688.png" alt="image-20221027211745688" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221027211745688.png" alt="image-20221027211745688" style="zoom: 25%;" /> 
 
 ##### 尝试1: 更改`.config`中的选项
 
@@ -282,7 +282,7 @@ cd /pancw/linux/ && make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- menuconfig
 
 进入kernel hacking，发现其中kernel debugging已经默认打上勾了，查看其他debug选项也没有找到解决方法
 
-<img src="./.assets/lab0-env/image-20221028124447101.png" alt="image-20221028124447101" style="zoom: 50%;" /> 
+<img src="./.assets/lab0-env/image-20221028124447101.png" alt="image-20221028124447101" style="zoom: 25%;" />  
 
 ##### 尝试3: 最后更改 `linux/Makefile`中的KBuild参数, 在末尾加上 `-g`
 
@@ -295,7 +295,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
 		   -g
 ```
 
-<img src="./.assets/lab0-env/image-20221028125734635.png" alt="image-20221028125734635" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028125734635.png" alt="image-20221028125734635" style="zoom: 25%;" /> 
 
 > 能够读取symbol table了！问题可能不在于`.config`中的那个选项设置，而在于编译时命令行参数(也就是Makefile)的flag设置问题，就像用gcc编译单个`.c`文件时需要加上`-g`后才能用gdb debug一样
 
@@ -313,7 +313,7 @@ b start_kernel
 break start_kernel
 ```
 
-<img src="./.assets/lab0-env/image-20221028131601593.png" alt="image-20221028131601593" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028131601593.png" alt="image-20221028131601593" style="zoom: 25%;" /> 
 
 ##### 在某个地址(例如0x80000000)处设置断点
 
@@ -322,7 +322,7 @@ b *0x80000000
 b *0x80200000
 ```
 
-<img src="./.assets/lab0-env/image-20221028131940027.png" alt="image-20221028131940027" style="zoom:50%;" />  
+<img src="./.assets/lab0-env/image-20221028131940027.png" alt="image-20221028131940027" style="zoom: 25%;" />  
 
 #####   查看所有断点
 
@@ -331,7 +331,7 @@ info break
 info b
 ```
 
-<img src="./.assets/lab0-env/image-20221028132007293.png" alt="image-20221028132007293" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132007293.png" alt="image-20221028132007293" style="zoom: 25%;" /> 
 
 ##### 撤销某个断点(一般要用info先查看所有断点)
 
@@ -339,7 +339,7 @@ info b
 del 2
 ```
 
-<img src="./.assets/lab0-env/image-20221028132034697.png" alt="image-20221028132034697" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132034697.png" alt="image-20221028132034697" style="zoom: 25%;" /> 
 
 > 删除了第2个断点(位于0x8000_0000)
 
@@ -352,15 +352,15 @@ c
 continue
 ```
 
-<img src="./.assets/lab0-env/image-20221028132121027.png" alt="image-20221028132121027" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132121027.png" alt="image-20221028132121027" style="zoom: 25%;" /> 
 
 > 提示我们碰到了第3个断点
 
-<img src="./.assets/lab0-env/image-20221028132136117.png" alt="image-20221028132136117" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132136117.png" alt="image-20221028132136117" style="zoom: 25%;" /> 
 
 > 此时QEMU terminal会显示OpenSBI的字样
 
-<img src="./.assets/lab0-env/image-20221028132335307.png" alt="image-20221028132335307" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132335307.png" alt="image-20221028132335307" style="zoom: 25%;" /> 
 
 > 继续执行，碰到第1个断点，到达`start_kernel()`函数a
 
@@ -370,7 +370,7 @@ continue
 layout src
 ```
 
-<img src="./.assets/lab0-env/image-20221028132420262.png" alt="image-20221028132420262" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132420262.png" alt="image-20221028132420262" style="zoom: 25%;" /> 
 
 ##### 单步执行原代码
 
@@ -379,7 +379,7 @@ n
 next
 ```
 
-<img src="./.assets/lab0-env/image-20221028132454442.png" alt="image-20221028132454442" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132454442.png" alt="image-20221028132454442" style="zoom: 25%;" /> 
 
 > 注意行号左侧的B+和小箭头，B+代表断点，>表示当前执行的指令行号
 
@@ -389,7 +389,7 @@ next
 layout asm
 ```
 
-<img src="./.assets/lab0-env/image-20221028132724353.png" alt="image-20221028132724353" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132724353.png" alt="image-20221028132724353" style="zoom: 25%;" /> 
 
 ##### 单步执行汇编代码
 
@@ -397,7 +397,7 @@ layout asm
 si
 ```
 
-<img src="./.assets/lab0-env/image-20221028132741640.png" alt="image-20221028132741640" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028132741640.png" alt="image-20221028132741640" style="zoom: 25%;" /> 
 
 ni和si有差别
 
@@ -418,19 +418,19 @@ s
 
 #### 结束调试
 
-<img src="./.assets/lab0-env/image-20221028133024587.png" alt="image-20221028133024587" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028133024587.png" alt="image-20221028133024587" style="zoom: 25%;" /> 
 
 > 调试结束后，先在右侧GDB输入`exit` , gdb 会提示你有活跃的程序运行(就是QEMU)，输入y
 
-<img src="./.assets/lab0-env/image-20221028133143170.png" alt="image-20221028133143170" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028133143170.png" alt="image-20221028133143170" style="zoom: 25%;" /> 
 
 > 此时gdb会成功退出，由于失去了gdb的调试约束，QEMU会运行linux kernel，并提示我们按Enter来激活该kernel自带的console
 
-<img src="./.assets/lab0-env/image-20221028133230845.png" alt="image-20221028133230845" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028133230845.png" alt="image-20221028133230845" style="zoom: 25%;" /> 
 
 > 这个shell和docker ubuntu的bash不是同一个shell，输入`ls`指令可以观察它内部的结构
 
-<img src="./.assets/lab0-env/image-20221028133417913.png" alt="image-20221028133417913" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028133417913.png" alt="image-20221028133417913" style="zoom: 25%;" /> 
 
 > 在QEMU内按下 control + A , 再按下X即可成功退出
 
@@ -444,7 +444,7 @@ cd /pancw/c_prog && riscv64-linux-gnu-gcc ftest.c -o ftest
 
 编译出来的可执行文件需要在riscv架构下才能执行，我们是无法在docker ubuntu中直接执行的，会报错
 
-<img src="./.assets/lab0-env/image-20221028114735247.png" alt="image-20221028114735247" style="zoom:50%;" /> 
+<img src="./.assets/lab0-env/image-20221028114735247.png" alt="image-20221028114735247" style="zoom: 25%;" /> 
 
 我们可以生成编译的中间文件`ftest.S`，里面包含了riscv汇编代码
 
@@ -484,7 +484,7 @@ printMessage:
 riscv64-linux-gnu-objdump -d ftest > ftest_objdump.S
 ```
 
-<img src="./.assets/lab0-env/image-20221028120046564.png" alt="image-20221028120046564" style="zoom:50%;" />
+<img src="./.assets/lab0-env/image-20221028120046564.png" alt="image-20221028120046564" style="zoom: 25%;" /> 
 
 > 左代码框`ftest_objdump.S`是`fest`经odjdump后的汇编代码，右代码框`ftest.S`是由`ftest.c`编译生成的中间产物
 
@@ -504,4 +504,4 @@ riscv64-linux-gnu-objdump -d ftest > ftest_objdump.S
 
 ## compiler review
 
-<img src="/Users/chuwenpan/Library/Mobile Documents/com~apple~CloudDocs/snapshots/Compilation-Flow-Diagram.webp" alt="Compilation Flow Diagram" style="zoom:33%;" />
+<img src="./.assets/lab0-env/image-20221209121209593.png" alt="image-20221209121209593" style="zoom:25%;" /> 

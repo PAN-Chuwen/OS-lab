@@ -44,19 +44,19 @@ M态的 trap_handler 做了一些基本处理后(openSBI), 把`mepc` 和 `mcause
 
 设置`sie`第6位为1, 第一反应就是使用 `CSRRWI x0, sie, 0x20`. 但是在编译报警告后我发现不对劲: `CSRRWI` 最多只能接受5位立即数, 没法设置第6位. 只能先用寄存器保存`0x20`, 再用`CSRRW` 来设置`sie[STIE]`
 
-<img src="./.assets/lab2/image-20221209111003596.png" alt="image-20221209111003596" style="zoom:50%;" /> 
+<img src="./.assets/lab2/image-20221209111003596.png" alt="image-20221209111003596" style="zoom: 25%;" /> 
 
 
 
-<img src="./.assets/lab2/image-20221209111028672.png" alt="image-20221209111028672" style="zoom:50%;" /> 
+<img src="./.assets/lab2/image-20221209111028672.png" alt="image-20221209111028672" style="zoom: 25%;" /> 
 
-<img src="./.assets/lab2/image-20221209111318027.png" alt="image-20221209111318027" style="zoom:50%;" /> 
+<img src="./.assets/lab2/image-20221209111318027.png" alt="image-20221209111318027" style="zoom: 25%;" /> 
 
 #### 设置 `sstatus[SIE] = 1`
 
 在吸取了教训后我首先查看了`sstatus`的格式, 发现RV64下` sstatus[SIE]`为第二位, 直接用 `CSRRWI` 设置
 
-<img src="./.assets/lab2/image-20221209111426319.png" alt="image-20221209111426319" style="zoom:50%;" />
+<img src="./.assets/lab2/image-20221209111426319.png" alt="image-20221209111426319" style="zoom: 25%;" />
 
 #### 设置` stvec = &_traps`
 
@@ -74,7 +74,7 @@ M态的 trap_handler 做了一些基本处理后(openSBI), 把`mepc` 和 `mcause
 | 参数对应的值                           | 0x0  | 0x0  | time | 0x0  | 0x0  | 0x0  | 0x0  | 0x0  |
 | 执行`ecall`进入M态之前参数对应的寄存器 | a7   | a6   | a0   | a1   | a2   | a3   | a4   | a5   |
 
-<img src="./.assets/lab2/image-20221209112229223.png" alt="image-20221209112229223" style="zoom:50%;" /> 
+<img src="./.assets/lab2/image-20221209112229223.png" alt="image-20221209112229223" style="zoom: 25%;" /> 
 
 
 
@@ -82,13 +82,13 @@ M态的 trap_handler 做了一些基本处理后(openSBI), 把`mepc` 和 `mcause
 
 `trap_handler` 中利用`clock_set_net_event` 来设置下一次时钟中断, 其中用到的 `get_cycles` 等同于汇编里的 `rdtime`. 而 `sbi_ecall` 更不用说了, 在lab1中我们已经实现过了, 注意下参数的位置即可.
 
-<img src="./.assets/lab2/image-20221209112710985.png" alt="image-20221209112710985" style="zoom:50%;" /> 
+<img src="./.assets/lab2/image-20221209112710985.png" alt="image-20221209112710985" style="zoom: 25%;" /> 
 
 ```sh
 make run
 ```
 
-<img src="./.assets/lab2/image-20221209113236731.png" alt="image-20221209113236731" style="zoom:50%;" /> 
+<img src="./.assets/lab2/image-20221209113236731.png" alt="image-20221209113236731" style="zoom: 25%;" /> 
 
 > 说明我们设置时钟中断成功了!
 
@@ -102,7 +102,7 @@ make run
 
 1. 在`entry.S` 保存前(保存后也可以, 因为寄存器值除了`sp`都没变化)和sret处分别打上断点, 并在`gdb`里用`continue`执行到第一个断点处
 
-<img src="./.assets/lab2/image-20221209113638958.png" alt="image-20221209113638958" style="zoom:50%;" /> 
+<img src="./.assets/lab2/image-20221209113638958.png" alt="image-20221209113638958" style="zoom: 25%;" /> 
 
 2.  用`layout regs` 查看寄存器的值
 
@@ -110,7 +110,7 @@ make run
 
    检查发现过后除了`PC`其他寄存器都没有变化, 说明我们寄存器保存/恢复代码功能实现了
 
-   <img src="./.assets/lab2/image-20221209113852628.png" alt="image-20221209113852628" style="zoom:50%;" /> 
+   <img src="./.assets/lab2/image-20221209113852628.png" alt="image-20221209113852628" style="zoom: 25%;" /> 
 
 #### 为什么需要保存 `sepc`, 或者为什么不需要?
 
@@ -128,7 +128,7 @@ command 7 # use the number of watch $sepc
 
 ##### 结果
 
-<img src="./.assets/lab2/image-20221209115123929.png" alt="image-20221209115123929" style="zoom:50%;" /> 
+<img src="./.assets/lab2/image-20221209115123929.png" alt="image-20221209115123929" style="zoom: 25%;" /> 
 
 每次`spec`发生变化时都发生在`clock.c:8` (理论上应该在 `test.c` 发生中断的那一行变化, 但 `sepc` 的改变是M态操作的, gdb展示的结果不一定准确, 但我们知道`sepc`一直指向 `test.c` 中发生中断的那一行, 除此之外没有任何变化, 确实不需要在 `context_switch` 中保存 )
 
